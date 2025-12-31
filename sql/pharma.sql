@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS raw.pharmacy_sales (
     sales_team           VARCHAR(100)
 );
 
-SELECT * FROM raw.pharmacy_sales LIMIT 10;
+SELECT * FROM raw.pharmacy_sales;
