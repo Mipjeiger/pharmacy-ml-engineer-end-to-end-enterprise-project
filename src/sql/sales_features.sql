@@ -26,3 +26,5 @@ GROUP BY
     month;
 
 SELECT * FROM features.sales_feature;
+
+SELECT * FROM features.sales_llm_context;

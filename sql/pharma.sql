@@ -20,4 +20,54 @@ CREATE TABLE IF NOT EXISTS raw.pharmacy_sales (
     sales_team           VARCHAR(100)
 );
 
+CREATE OR REPLACE VIEW features.sales_llm_context AS
+SELECT
+    distributor,
+    customer_name,
+    city,
+    country,
+    latitude,
+    longitude,
+    channel,
+    sub_channel,
+    product_name,
+    product_class,
+    sales_team,
+    sales_rep_name,
+    manager,
+    month,
+    year,
+
+    -- aggregated metrics
+    SUM(quantity) AS total_quantity,
+    AVG(price)    AS avg_price,
+    SUM(sales)    AS total_sales,
+
+    CASE
+        WHEN SUM(quantity) > 0
+        THEN SUM(sales) / SUM(quantity)
+        ELSE 0
+    END AS avg_revenue_per_unit
+
+FROM raw.pharmacy_sales
+GROUP BY
+    distributor,
+    customer_name,
+    city,
+    country,
+    latitude,
+    longitude,
+    channel,
+    sub_channel,
+    product_name,
+    product_class,
+    sales_team,
+    sales_rep_name,
+    manager,
+    month,
+    year;
+
+
 SELECT * FROM raw.pharmacy_sales;
+
+SELECT * FROM features.sales_llm_context;
