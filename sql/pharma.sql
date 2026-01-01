@@ -69,5 +69,5 @@ GROUP BY
 
 
 SELECT * FROM raw.pharmacy_sales;
-
 SELECT * FROM features.sales_llm_context;
+SELECT * FROM features.sales_feature;
