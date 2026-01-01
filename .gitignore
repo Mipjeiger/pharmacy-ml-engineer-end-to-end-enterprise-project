@@ -5,4 +5,10 @@ data/pharmacy_sales_cleaned.xlsx
 mlruns
 notebook/mlruns
 notebook/catboost_info
-notebook/models
+# ML artifacts
+
+notebook/models/
+*.joblib
+*.pkl
+*.h5
+mlruns/
