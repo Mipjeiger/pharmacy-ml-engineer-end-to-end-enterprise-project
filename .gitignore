@@ -12,3 +12,14 @@ notebook/models/
 *.pkl
 *.h5
 mlruns/
+.venv/
+
+# airflow
+airflow/start_airflow.sh
+airflow/plugins/__pycache__
+airflow/dags/__pycache__
+
+# API
+pipelines/API/__pycache__
+
+.vscode
