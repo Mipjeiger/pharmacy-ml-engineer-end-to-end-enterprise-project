@@ -98,3 +98,4 @@ SELECT * FROM raw.pharmacy_sales;
 SELECT * FROM features.sales_llm_context;
 SELECT * FROM features.sales_feature;
 SELECT * FROM features.pharmacy_sales_enhanced;
+SELECT * FROM silver.pharmacy_sales;

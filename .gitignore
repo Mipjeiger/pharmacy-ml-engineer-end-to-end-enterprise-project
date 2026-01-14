@@ -1,6 +1,6 @@
 .env
-*DS_Store
-DS_Store
+.DS_Store
+**/.DS_Store
 data/pharmacy_sales_cleaned.xlsx
 mlruns
 notebook/mlruns

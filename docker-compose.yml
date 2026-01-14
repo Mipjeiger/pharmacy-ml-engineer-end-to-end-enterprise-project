@@ -1,0 +1,6 @@
+version: '3.9'
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
