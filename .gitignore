@@ -18,6 +18,11 @@ mlruns
 airflow/start_airflow.sh
 airflow/plugins/__pycache__
 airflow/dags/__pycache__
+airflow/airflow.db
+airflow/airflow.cfg
+airflow/generate_password.py
+airflow-status.sh
+airflow/logs
 
 # API
 pipelines/API/__pycache__
