@@ -2,17 +2,17 @@
 .DS_Store
 **/.DS_Store
 data/pharmacy_sales_cleaned.xlsx
-mlruns
-notebook/mlruns
-notebook/catboost_info
-# ML artifacts
 
+# ML artifacts
+mlruns/
+notebook/mlruns/
+notebook/catboost_info/
 notebook/models/
 *.joblib
 *.pkl
 *.h5
-mlruns/
 .venv/
+mlruns
 
 # airflow
 airflow/start_airflow.sh

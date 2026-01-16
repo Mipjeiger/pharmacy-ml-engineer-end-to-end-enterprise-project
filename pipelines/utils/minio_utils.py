@@ -6,7 +6,7 @@ from config import MINIO_BUCKET
 
 # Initialize MinIO client
 minio = Minio(
-    os.getenv("MINIO_ENDPOINT", "localhost:9000"),
+    os.getenv("MINIO_ENDPOINT", "localhost:9010"),
     access_key=os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
     secret_key=os.getenv("MINIO_SECRET_KEY", "minioadmin"),
     secure=False,
@@ -25,9 +25,11 @@ def write_json(prefix, data, path_suffix=None):
     path = f"{prefix}/{path_suffix}.json" if path_suffix else f"{prefix}/{ts}.json"
 
     payload = json.dumps(data).encode()
+    from io import BytesIO
+
     minio.put_object(
         MINIO_BUCKET,
         path,
-        data=payload,
+        data=BytesIO(payload),
         length=len(payload),
     )
