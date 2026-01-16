@@ -1,6 +1,60 @@
-version: '3.9'
+version: "3.9"
+
 services:
-  minio:
-    image: minio/minio
-    container_name: minio
+  # ==========================
+  # Kubernetes (k3s)
+  # ==========================
+  k3s:
+    image: rancher/k3s:v1.29.1-k3s1
+    container_name: kubernetes
+    privileged: true
+    command: server --disable traefik
     environment:
+      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_MODE=644
+    volumes:
+      - k3s-data:/var/lib/rancher/k3s
+      - ./data/kubeconfig:/output
+    ports:
+      - "6443:6443"  # Kubernetes API server
+
+  # ==========================
+  # Redis (Feature online store)
+  # ==========================
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
+  # ==========================
+  # Prometheus (Monitoring)
+  # ==========================
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/prometheus:/prometheus
+    ports:
+      - "9090:9090"
+
+  # ==========================
+  # Grafana (Visualization)
+  # ==========================
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
+volumes:
+  k3s-data:

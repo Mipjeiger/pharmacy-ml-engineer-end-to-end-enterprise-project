@@ -1,0 +1,41 @@
+# Python dependencies & environments
+.venv/
+venv/
+env/
+bin/
+lib/
+include/
+*.pyc
+__pycache__/
+
+# MLflow & Tracking
+mlruns/
+mlartifacts/
+.trash/
+
+# Data & Large Files (Ini yang paling bikin berat!)
+data/
+*.csv
+*.json
+*.parquet
+*.delta
+*.db
+
+# Version Control
+.git/
+.gitignore
+
+# OS & IDE Files
+.DS_Store
+.vscode/
+.idea/
+
+# Orchestrator & Local Logs
+airflow/logs/
+airflow/plugins/
+logs/
+*.log
+
+# Kafka & Storage Local
+kafka/data/
+minio/data/

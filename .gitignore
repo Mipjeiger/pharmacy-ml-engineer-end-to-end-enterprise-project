@@ -22,4 +22,7 @@ airflow/dags/__pycache__
 # API
 pipelines/API/__pycache__
 
+data
 .vscode
+pipelines/__pycache__
+pipelines/utils/__pycache__
