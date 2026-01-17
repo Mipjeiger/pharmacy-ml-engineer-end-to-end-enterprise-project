@@ -1,5 +1,5 @@
 import psycopg2
-from config import POSTGRES_CONFIG
+from pipelines.config import POSTGRES_CONFIG
 
 
 def fetch_pharmacy_sales():

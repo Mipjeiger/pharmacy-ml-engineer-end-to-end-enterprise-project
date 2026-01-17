@@ -1,8 +1,17 @@
 """Streaming pipeline - Silver layer processing."""
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to Python path for direct execution
+project_root = Path(__file__).resolve().parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import logging
-from utils.kafka_utils import get_kafka_consumer, get_kafka_producer
-from config import TOPIC_BRONZE, TOPIC_SILVER
+from pipelines.utils.kafka_utils import get_kafka_consumer, get_kafka_producer
+from pipelines.config import TOPIC_BRONZE, TOPIC_SILVER
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -30,7 +39,7 @@ def run_silver_pipeline(max_messages=1000):
     )
 
     consumer = get_kafka_consumer(
-        TOPIC_BRONZE, group_id="silver_pipeline_group", earliest=True
+        TOPIC_BRONZE, group_id="silver_pipeline_group", earliest=False
     )
 
     producer = get_kafka_producer()

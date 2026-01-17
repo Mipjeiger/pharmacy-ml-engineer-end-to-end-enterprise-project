@@ -1,9 +1,18 @@
 """Bronze layer pipeline for pharmacy data (DB -> Kafka)."""
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to Python path for direct execution
+project_root = Path(__file__).resolve().parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import logging
-from utils.kafka_utils import get_kafka_producer
-from utils.db_utils import fetch_pharmacy_sales
-from config import TOPIC_BRONZE
+from pipelines.utils.kafka_utils import get_kafka_producer
+from pipelines.utils.db_utils import fetch_pharmacy_sales
+from pipelines.config import TOPIC_BRONZE
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

@@ -1,10 +1,19 @@
 """Streaming pipeline - Gold layer processing."""
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to Python path for direct execution
+project_root = Path(__file__).resolve().parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import logging
 from collections import defaultdict
-from utils.kafka_utils import get_kafka_consumer, get_kafka_producer
-from utils.minio_utils import write_json
-from config import TOPIC_SILVER, TOPIC_GOLD
+from pipelines.utils.kafka_utils import get_kafka_consumer, get_kafka_producer
+from pipelines.utils.minio_utils import write_json
+from pipelines.config import TOPIC_SILVER, TOPIC_GOLD
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

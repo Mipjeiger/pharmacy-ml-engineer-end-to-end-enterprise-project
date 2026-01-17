@@ -23,6 +23,8 @@ airflow/airflow.cfg
 airflow/generate_password.py
 airflow-status.sh
 airflow/logs
+airflow/TROUBLESHOOTING_DAG_RELOAD.md
+airflow-reload-dag.sh
 
 # API
 pipelines/API/__pycache__
