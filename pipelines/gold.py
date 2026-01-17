@@ -14,8 +14,14 @@ logger = logging.getLogger(__name__)
 agg = defaultdict(float)
 
 
-def run_gold_pipeline(max_messages=1000):
-    consumer = get_kafka_consumer(TOPIC_SILVER)
+def run_gold_pipeline(max_messages=2000):
+
+    logger.info("Initializing aggregation dictionary.")
+
+    consumer = get_kafka_consumer(
+        TOPIC_SILVER, group_id="gold_pipeline_group", earliest=True
+    )
+
     producer = get_kafka_producer()
     count = 0
 
@@ -24,7 +30,9 @@ def run_gold_pipeline(max_messages=1000):
     )
 
     for msg in consumer:
+
         data = msg.value
+
         # Use 'get' to get security in case keys are data missing
         product = data.get("product_name")
         year = data.get("year")
@@ -35,7 +43,7 @@ def run_gold_pipeline(max_messages=1000):
             logger.warning(f"Skipping record with missing fields: {data}")
             continue
 
-        key = (product, year, month)
+        key = f"{product}_{year}_{month}"
         agg[key] += sales
 
         record = {
@@ -47,21 +55,20 @@ def run_gold_pipeline(max_messages=1000):
 
         producer.send(TOPIC_GOLD, value=record)
 
-        # Save to MinIO in structured path
-        write_json(
-            "gold",
-            record,
-            path_suffix=f"{year}/{month}/{product}",
-        )
-
         count += 1
-        if count >= max_messages:
-            logger.info(f"Reached max messages limit: {max_messages}. Stopping.")
-            break
 
+        # Set checkpoint in every 100 messages received and break if max reached
+        if count % 100 == 0:
+            logger.info(f"Processed {count} messages.")
+            if count >= max_messages:
+                logger.info(f"Reached max messages limit: {max_messages}. Stopping.")
+                break
+
+    # Close resources connection for the messages not sent yet
     producer.flush()
+    producer.close()
     consumer.close()
-    logger.info(f"Gold pipeline completed. Total records processed: {count}.")
+    logger.info(f"Gold pipeline completed. Total records processed: {count} records.")
 
 
 # usage

@@ -2,7 +2,6 @@
 
 import logging
 from utils.kafka_utils import get_kafka_consumer, get_kafka_producer
-from utils.minio_utils import write_json
 from config import TOPIC_BRONZE, TOPIC_SILVER
 
 # Set up logging
@@ -16,7 +15,7 @@ def clean_record(data):
         if data["price"] <= 0 or data["quantity"] is None:
             return None  # Invalid record
 
-        data["sales_clean"] = data["price"] * data["quantity"]
+        data["sales_value"] = data["price"] * data["quantity"]
         data["product_name"] = str(data["product_name"].strip().lower())
         return data
     except Exception as e:
@@ -30,7 +29,10 @@ def run_silver_pipeline(max_messages=1000):
         f"Starting Silver layer pipeline, processing up to {max_messages} messages."
     )
 
-    consumer = get_kafka_consumer(TOPIC_BRONZE)
+    consumer = get_kafka_consumer(
+        TOPIC_BRONZE, group_id="silver_pipeline_group", earliest=True
+    )
+
     producer = get_kafka_producer()
 
     count = 0
@@ -41,9 +43,8 @@ def run_silver_pipeline(max_messages=1000):
             if cleaned:
                 # Send to kafka Silver topic
                 producer.send(TOPIC_SILVER, value=cleaned)
-                write_json("silver", cleaned)
-
                 count += 1
+
                 if count % 100 == 0:
                     logger.info(f"Processed {count} messages.")
 
