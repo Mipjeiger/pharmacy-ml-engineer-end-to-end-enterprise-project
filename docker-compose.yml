@@ -72,5 +72,75 @@ services:
       - "9010:9000"
       - "9011:9011"
 
+  # ==========================
+  # Feast feature store
+  # ==========================
+  feast:
+    image: python:3.11-slim
+    container_name: feast
+    working_dir: /feature_repo
+    volumes:
+      - ./feature_repo:/feature_repo
+      - ./requirements.txt:/requirements.txt
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r /requirements.txt &&
+      feast server -h 0.0.0.0
+      "
+    ports:
+      - "6566:6566"  # Feast Core
+    depends_on:
+      - redis
+    env_file:
+      - .env
+
+  # ==========================
+  # FastAPI Inference Service
+  # ==========================
+  api:
+    image: python:3.11-slim
+    container_name: pharmacy_api
+    working_dir: /app
+    volumes:
+      - ./api:/app/api
+      - ./models:/app/models
+      - ./feature_repo:/app/feature_repo
+      - ./requirements.txt:/requirements.txt
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r /requirements.txt &&
+      uvicorn api.main:app --host 0.0.0.0 --port 8000
+      "
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - feast
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # ==========================
+  # Training Container (Manual Run)
+  # ==========================
+  trainer:
+    image: python:3.11-slim
+    container_name: pharmacy-trainer
+    working_dir: /trainer
+    volumes:
+      - ./training:/trainer/training
+      - ./feature_repo:/trainer/feature_repo
+      - ./models:/trainer/models
+      - ./requirements.txt:/requirements.txt
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r /requirements.txt &&
+      python3 training/train_ml_model.py
+      "
+    env_file:
+      - .env
+    profiles:
+      - training
+
 volumes:
   k3s-data:
