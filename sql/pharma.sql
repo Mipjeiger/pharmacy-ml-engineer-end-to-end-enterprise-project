@@ -1,4 +1,12 @@
--- Active: 1764687319910@@127.0.0.1@5432@Pharmacy_DB
+-- Active: 1764687319910@@127.0.0.1@5432@pharmacy_db
+
+-- create database Pharmacy_DB
+CREATE DATABASE Pharmacy_DB;
+
+CREATE SCHEMA IF NOT EXISTS raw;
+CREATE SCHEMA IF NOT EXISTS silver;
+CREATE SCHEMA IF NOT EXISTS features;
+
 CREATE TABLE IF NOT EXISTS raw.pharmacy_sales (
     distributor          VARCHAR(255),
     customer_name        VARCHAR(255),
